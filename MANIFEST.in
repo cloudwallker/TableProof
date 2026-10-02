@@ -1,0 +1,7 @@
+include README_ZH.md CONTRIBUTING.md Start-TableProof.cmd
+include docs/validation.md
+recursive-include docs/images *.jpg
+include .github/workflows/ci.yml
+recursive-include examples *.md *.xlsx *.json
+recursive-include scripts *.py
+recursive-include src/tableproof/static *.html *.css *.js

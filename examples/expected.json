@@ -1,0 +1,28 @@
+{
+  "synthetic": true,
+  "converter_measurement": false,
+  "source": "synthetic.xlsx",
+  "mapping": {
+    "sheet": "Demo",
+    "range_ref": "A1:D4",
+    "table_index": 0,
+    "header": true
+  },
+  "scenarios": {
+    "correct.md": {
+      "status": "PASS",
+      "failed_coordinates": []
+    },
+    "lossy.md": {
+      "status": "FAIL",
+      "failed_coordinates": [
+        "A2",
+        "B2",
+        "C2",
+        "D2",
+        "A3",
+        "C3"
+      ]
+    }
+  }
+}
