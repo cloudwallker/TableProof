@@ -4,13 +4,13 @@
 
 [安装](#安装) · [快速体验](#快速体验) · [命令与结果](#命令与结果) · [验证与接口](docs/validation.md) · [贡献指南](CONTRIBUTING.md)
 
-**本地检查 Excel 转 Markdown 时发生的数据变化，逐格展示差异和来源，帮助开发者验收送入 AI 的表格。**
+**对照原始 XLSX 与转换后的 Markdown，在本地逐格检查数据变化，查看确定差异及对应的源单元格证据。**
 
-**English:** A local tool that checks Excel-to-Markdown conversion fidelity, reports cell-level differences, and links findings to their source cells.
+**English:** Compare an original XLSX workbook with converted Markdown, identify confirmed differences, and inspect their source-cell evidence—all locally.
 
 TableProof 接受原始 XLSX 和已经转换的 Markdown，独立读取源单元格，在你明确指定的范围内进行位置比较。例如，文本 `00123` 变成 `123`、数值 `123456789.123` 变成 `1.234568e+08`、文本 `NA` 变成 `NaN`，报告会指出对应的源坐标和判断依据。
 
-这是首版原型。检查通过只表示选定范围在支持规则下相符，不代表整份工作簿完整、公式正确或 AI 能正确理解内容。项目不承诺真实数据准确率。
+通过 CLI 或本地网页预览选定单元格与 Markdown 表格的映射，并将检查结果导出为 JSON 或 HTML。
 
 ![TableProof 合成演示：12 格中 9 格通过、3 格差异，点击 B2 查看证据](docs/images/tableproof.jpg)
 
@@ -90,6 +90,8 @@ tableproof convert examples/synthetic.xlsx --output converted.md
 结果附带 `converted.md.metadata.json`，记录 MarkItDown 版本、参数、输入与输出 SHA-256 以及时间，不包含文件绝对路径。转换器仅生成待验收文本，校验基准仍来自独立读取的 XLSX。此命令禁用 MarkItDown 第三方插件；缺少可选依赖时退出 `3`，不影响其他命令。
 
 ## 支持边界
+
+`PASS` 表示选定且明确映射的单元格在支持规则下相符。整份工作簿的完整性、公式正确性和 AI 对内容的理解需要另行检查。
 
 - 首版支持 XLSX、一张工作表、一个连续矩形范围和一张 GFM Markdown 表。CSV 输入不在首版范围内。
 - 数值从 XLSX 原始 XML 读取，通过十进制比较；`1`、`1.0` 和 `1e0` 数值相等。无默认容差，不猜测千位符或区域格式。

@@ -12,7 +12,7 @@ English | [中文](README_ZH.md)
 
 Give TableProof an original XLSX workbook and an existing Markdown conversion. It independently reads the source cells and compares an explicitly selected range by position. Findings explain changes such as text `00123` becoming `123`, `123456789.123` becoming `1.234568e+08`, or literal `NA` becoming `NaN`, with the source cell coordinates.
 
-This is an initial prototype. Passing means that the selected cells match under supported rules. It does not certify the whole workbook, formula correctness, or an AI system's interpretation. No real-world accuracy claim is made.
+Use the CLI or local web interface to preview the selected cell-to-table mapping and export findings as JSON or HTML.
 
 ## Install
 
@@ -83,6 +83,8 @@ tableproof convert examples/synthetic.xlsx --output converted.md
 `converted.md.metadata.json` records the MarkItDown version, parameters, source/output SHA-256 hashes and timestamp, without absolute paths. Third-party MarkItDown plugins are disabled. Missing optional dependencies return code `3`; all other commands remain available. Conversion output is never used as its own verification baseline.
 
 ## Limits
+
+A PASS result covers the selected mapped cells under supported comparison rules. Workbook-wide completeness, formula correctness, and an AI system's interpretation require separate checks.
 
 - XLSX only for this release, one sheet and contiguous rectangle, mapped to one GFM table. CSV input is not implemented.
 - Raw numeric XML values are compared using decimal arithmetic. `1`, `1.0` and `1e0` are numerically equal. No default tolerance or guessed locale/thousands separators.
