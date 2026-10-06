@@ -108,3 +108,7 @@ python scripts/generate_examples.py
 Contributions should include small synthetic regression fixtures and independently specified expectations. Include converter version and parameters for real conversion reports, and never publish private spreadsheets or credentials. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 MIT License · Copyright (c) 2026 TableProof contributors.
+
+## Interface
+
+Local Excel-to-Markdown fidelity checks with readable cell evidence, keyboard-accessible filters, and responsive workspace and offline HTML reports.

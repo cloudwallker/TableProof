@@ -95,7 +95,7 @@ def render_html(report: dict, redact: bool = False) -> str:
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
-<title>TableProof · 表格验收报告</title><style>{css}</style></head><body><main>
+<title>TableProof · 表格验收报告</title><style>{css}</style></head><body><a class="skip-link" href="#report-main">跳到验收报告</a><main id="report-main" tabindex="-1">
 <header><div class="brand">▦ TableProof <span>独立验收报告</span></div><span class="local">离线文件 · 本地证据</span></header>
 <section class="intro"><div><div class="eyebrow">TABLE FIDELITY / CELL EVIDENCE</div><h1>每个单元格，都有依据。</h1>
 <p>{_text(scope.get("sheet", ""))} · {_text(scope.get("range_ref", ""))} · Markdown 表 {_count(scope.get("table_index")) + 1}</p>
@@ -109,12 +109,15 @@ def render_html(report: dict, redact: bool = False) -> str:
 {'<aside class="issues"><b>范围与结构提示</b><ul>' + issues + '</ul></aside>' if issues else ''}
 <section class="panel"><div class="panel-title"><h2>源单元格定位</h2><span>点击坐标，在来源与证据之间跳转</span></div>
 <div class="source-grid" style="grid-template-columns:repeat({columns},minmax(90px,1fr))">{''.join(tiles) or '<p>映射无法确定，未生成逐格归因。</p>'}</div></section>
-<section class="panel"><div class="panel-title"><h2>逐格证据</h2><div class="filters"><button class="active" data-filter="ALL">全部</button><button data-filter="FAIL">差异 FAIL</button><button data-filter="INDETERMINATE">未知</button><button data-filter="PASS">通过 PASS</button></div></div>
-<div class="table-wrap"><table><thead><tr><th>源坐标</th><th>状态</th><th>XLSX 存储值</th><th>Markdown 值</th><th>规则与依据</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div><p id="filter-empty" hidden>此筛选条件下没有单元格。</p></section>
+<section class="panel"><div class="panel-title"><h2 id="evidence-heading">逐格证据</h2><div class="filters"><button class="active" data-filter="ALL" aria-pressed="true">全部</button><button data-filter="FAIL" aria-pressed="false">差异 FAIL</button><button data-filter="INDETERMINATE" aria-pressed="false">未知</button><button data-filter="PASS" aria-pressed="false">通过 PASS</button></div></div>
+<div class="table-wrap" tabindex="0" role="region" aria-labelledby="evidence-heading"><table><thead><tr><th>源坐标</th><th>状态</th><th>XLSX 存储值</th><th>Markdown 值</th><th>规则与依据</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div><p id="filter-empty" role="status" hidden>此筛选条件下没有单元格。</p></section>
 <footer>TableProof · 可复查的转换证据 · 数值以 XLSX 存储值为准；公式不会重算。</footer>
 </main><script>
 document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {{
- document.querySelectorAll('[data-filter]').forEach(item => item.classList.toggle('active', item === button));
+ document.querySelectorAll('[data-filter]').forEach(item => {{
+  item.classList.toggle('active', item === button);
+  item.setAttribute('aria-pressed', String(item === button));
+ }});
  let visible = 0;
  document.querySelectorAll('tbody tr[data-state]').forEach(row => {{ row.hidden = button.dataset.filter !== 'ALL' && row.dataset.state !== button.dataset.filter; if (!row.hidden) visible++; }});
  document.getElementById('filter-empty').hidden = visible > 0;

@@ -52,10 +52,10 @@ async function request(path, data) {
 }
 async function task(message, action) {
   if (state.busy) return;
-  state.busy = true; document.body.classList.add("busy"); error(""); phase(message); controls();
+  state.busy = true; document.querySelector(".workspace").setAttribute("aria-busy", "true"); document.body.classList.add("busy"); error(""); phase(message); controls();
   try { await action(); }
   catch (exception) { error(exception.message || "无法连接本地服务，请确认服务仍在运行。"); phase("请检查输入"); }
-  finally { state.busy = false; document.body.classList.remove("busy"); controls(); }
+  finally { state.busy = false; document.querySelector(".workspace").setAttribute("aria-busy", "false"); document.body.classList.remove("busy"); controls(); }
 }
 function option(select, value, label) {
   const item = document.createElement("option"); item.value = String(value); text(item, label); select.append(item);
@@ -223,12 +223,15 @@ $("audit-button").addEventListener("click", () => task("正在独立验收…", 
   const result = await (await request("/api/audit", {...payload(), confirmed: $("confirm").checked, mapping_token: state.preview.mapping_token})).json();
   if (revision !== state.revision) return;
   state.report = result; state.filter = "ALL"; state.page = 0; state.selected = null;
-  document.querySelectorAll("[data-filter]").forEach(button => button.classList.toggle("active", button.dataset.filter === "ALL"));
+  document.querySelectorAll("[data-filter]").forEach(button => (button.classList.toggle("active", button.dataset.filter === "ALL"), button.setAttribute("aria-pressed", String(button.dataset.filter === "ALL"))));
   renderReport();
 }));
 document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => {
   state.filter = button.dataset.filter; state.page = 0;
-  document.querySelectorAll("[data-filter]").forEach(item => item.classList.toggle("active", item === button)); renderTable();
+  document.querySelectorAll("[data-filter]").forEach(item => {
+    item.classList.toggle("active", item === button);
+    item.setAttribute("aria-pressed", String(item === button));
+  }); renderTable();
 }));
 $("page-prev").addEventListener("click", () => { state.page--; renderTable(); });
 $("page-next").addEventListener("click", () => { state.page++; renderTable(); });

@@ -115,3 +115,7 @@ python scripts/generate_examples.py
 欢迎贡献最小合成样例和预期结果。真实转换问题请附转换器名称、版本、参数及可公开复现的文件；不要提交个人数据、业务表格、日志凭据或密钥。见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 MIT License · Copyright (c) 2026 TableProof contributors.
+
+## 界面体验
+
+本地 Excel 到 Markdown 保真验收工具，提供易读的逐格证据、可用键盘操作的筛选以及适配窄屏的工作台和离线 HTML 报告。
