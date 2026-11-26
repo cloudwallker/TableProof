@@ -102,7 +102,7 @@ def audit(xlsx_data: bytes, markdown_text: str, sheet: str, range_ref: str,
         raise InputError("Markdown 表编号必须为非负整数（内部从 0 开始）。")
     if type(header) is not bool:
         raise InputError("header 必须是布尔值。")
-    tables = parse_tables(markdown_text)
+    tables = parse_tables(markdown_text, check_header_content=header)
     if table_index >= len(tables):
         raise InputError("没有找到所选 Markdown 表格，请检查内容和表编号。")
     source = read_range(xlsx_data, sheet, range_ref)

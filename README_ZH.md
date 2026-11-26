@@ -10,7 +10,7 @@
 
 TableProof 接受原始 XLSX 和已经转换的 Markdown，独立读取源单元格，在你明确指定的范围内进行位置比较。例如，文本 `00123` 变成 `123`、数值 `123456789.123` 变成 `1.234568e+08`、文本 `NA` 变成 `NaN`，报告会指出对应的源坐标和判断依据。
 
-通过 CLI 或本地网页预览选定单元格与 Markdown 表格的映射，并将检查结果导出为 JSON 或 HTML。
+可逐字核验 Markdown 行内代码中的文本和编号，在本地网页预览单元格映射，并将检查结果导出为 JSON 或 HTML。
 
 ![TableProof 合成演示：12 格中 9 格通过、3 格差异，点击 B2 查看证据](docs/images/tableproof.jpg)
 
@@ -63,6 +63,8 @@ Windows 用户完成环境安装后，也可双击项目根目录的 `Start-Tabl
 | `convert FILE --output converted.md` | 可选调用本机 MarkItDown，生成 Markdown 与转换元数据 |
 
 `check` 默认把选定 XLSX 范围的第一行与 Markdown 表头对齐；用 `--no-header` 时，选区全部行只与 Markdown 数据行比较，忽略 Markdown 表头。`--table 2` 选择第二张 Markdown 表，外部编号从 1 开始，JSON 内部 `table_index` 从 0 开始。工具不会发现尺寸相同的行列重排；映射由使用者确认。
+
+转换器有时会用反引号包裹编号。对于内容为 `00123` 的 Excel 文本单元格，Markdown 行内代码 `` `00123` `` 会通过，`` `123` `` 会报告差异。加上 `--no-header` 即可检查带格式表头下的数据行，工具仍会核对每行的列数。
 
 ```bash
 tableproof check source.xlsx --markdown converted.md --sheet Sheet1 --range B2:D20 --table 2 --no-header --json -

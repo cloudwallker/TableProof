@@ -50,6 +50,8 @@ def test_inspect_handles_unicode_paths_without_cell_contents(source):
     ("body", "exit_code", "status"),
     [
         ("| 00123 | 123456789.123 | NA |", 0, "PASS"),
+        ("| `00123` | 123456789.123 | NA |", 0, "PASS"),
+        ("| `123` | 123456789.123 | NA |", 1, "FAIL"),
         ("| 123 | 1.234568e+08 | NaN |", 1, "FAIL"),
         ("| 00123 | 123456789.123 | NA |\n| x | 1 | y |", 2, "INDETERMINATE"),
     ],
@@ -68,7 +70,7 @@ def test_second_table_and_no_header_map_to_first_selected_source_row(source, tmp
     md = tmp_path / "two.md"
     md.write_text(
         "| other |\n| --- |\n| nope |\n\n"
-        "| A | B | C |\n| --- | --- | --- |\n| 00123 | 123456789.123 | NA |\n",
+        "| **A** | B | C |\n| --- | --- | --- |\n| 00123 | 123456789.123 | NA |\n",
         encoding="utf-8",
     )
     result = run_cli("check", source, "--markdown", md, "--sheet", "数据", "--range", "A2:C2", "--no-header", "--table", "2", "--json", "-")

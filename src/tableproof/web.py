@@ -172,7 +172,7 @@ def _preview(data, secret):
     args = _input(data)
     xlsx_data, markdown, sheet, range_ref, index, header = args
     source = read_range(xlsx_data, sheet, range_ref)
-    tables = parse_tables(markdown)
+    tables = parse_tables(markdown, check_header_content=header)
     if index >= len(tables):
         raise InputError("未找到所选 Markdown 表，请检查内容和表编号。")
     table = tables[index]

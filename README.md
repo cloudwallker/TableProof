@@ -12,7 +12,7 @@ English | [中文](README_ZH.md)
 
 Give TableProof an original XLSX workbook and an existing Markdown conversion. It independently reads the source cells and compares an explicitly selected range by position. Findings explain changes such as text `00123` becoming `123`, `123456789.123` becoming `1.234568e+08`, or literal `NA` becoming `NaN`, with the source cell coordinates.
 
-Use the CLI or local web interface to preview the selected cell-to-table mapping and export findings as JSON or HTML.
+Check text and identifiers inside Markdown code spans, preview the cell mapping in the local web interface, and export findings as JSON or HTML.
 
 ## Install
 
@@ -56,6 +56,8 @@ After installing the environment, Windows users can also double-click `Start-Tab
 | `convert FILE --output converted.md` | Optionally run local MarkItDown and record conversion metadata |
 
 By default, the first selected XLSX row maps to the Markdown header. With `--no-header`, every selected source row maps to Markdown data rows; the Markdown header is ignored. `--table 2` selects the second table. CLI table numbers start at 1; JSON `table_index` starts at 0. Same-size row or column reordering is not detected automatically; the user must confirm the mapping.
+
+When a converter wraps an identifier in backticks, TableProof compares its displayed code text. For an XLSX text cell containing `00123`, the Markdown code span `` `00123` `` passes and `` `123` `` fails. Use `--no-header` to check body rows under styled headings. Row widths are still checked.
 
 ```bash
 tableproof check source.xlsx --markdown converted.md --sheet Sheet1 --range B2:D20 --table 2 --no-header --json -

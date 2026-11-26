@@ -53,6 +53,16 @@ def test_accepts_same_origin_inspection_and_lists_markdown_tables(client):
     assert result.json()["tables"][0]["columns"] == 2
 
 
+def test_body_only_preview_and_audit_ignore_header_styles(client):
+    data = {**payload(), "range_ref": "A2:B2", "header": False,
+            "markdown": "| **名称** | 数量 |\n| --- | --- |\n| 样例 | 12 |"}
+    preview = client.post("/api/preview", json=data).json()
+    assert preview["issues"] == []
+    assert preview["markdown_preview"] == [["样例", "12"]]
+    audited = client.post("/api/audit", json={**data, "confirmed": True, "mapping_token": preview["mapping_token"]})
+    assert audited.json()["status"] == "PASS"
+
+
 def test_preview_confirmation_is_bound_to_exact_input(client):
     data = payload()
     denied = client.post("/api/audit", json=data)
