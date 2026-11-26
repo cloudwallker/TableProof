@@ -33,10 +33,22 @@ def test_malformed_row_width_cannot_be_silently_padded_or_truncated(row):
 
 @pytest.mark.parametrize(
     "cell",
-    ["**bold**", "`code`", "[label](https://example.com)", "<b>HTML</b>", "![alt](image.png)", "~~strike~~"],
+    ["**bold**", "[label](https://example.com)", "<b>HTML</b>", "![alt](image.png)", "~~strike~~"],
 )
 def test_unsupported_inline_expressions_are_flagged(cell):
     table = parse_tables("| A |\n| --- |\n| " + cell + " |")[0]
+    assert table["issues"]
+
+
+def test_inline_code_uses_literal_display_text():
+    table = parse_tables("| ID | Note |\n| --- | --- |\n| `00123` | pre `` x`y `` `&amp;` |")[0]
+    assert table["rows"] == [["00123", "pre x`y &amp;"]]
+    assert table["issues"] == []
+
+
+@pytest.mark.parametrize("body", ["| [link](doc.md) | x |", "| short |"])
+def test_skipping_header_values_still_checks_body_content_and_width(body):
+    table = parse_tables("| **A** | B |\n| --- | --- |\n" + body, check_header_content=False)[0]
     assert table["issues"]
 
 

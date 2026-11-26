@@ -33,7 +33,7 @@ def _split_row(line: str) -> list[str]:
 
 def _plain(inline, issues):
     children = inline.children or []
-    if any(child.type != "text" for child in children):
+    if issues is not None and any(child.type not in ("text", "code_inline") for child in children):
         message = "表格含不支持的 Markdown 内联样式、链接、图片或 HTML；无法可靠逐格比较。"
         if message not in issues:
             issues.append(message)
@@ -45,8 +45,8 @@ def _unknown(issue):
     return {"index": 0, "header": [], "rows": [], "issues": [issue]}
 
 
-def parse_tables(text: str) -> list[dict]:
-    """Parse plain GFM tables; unsupported content remains visible as issues."""
+def parse_tables(text: str, *, check_header_content: bool = True) -> list[dict]:
+    """Parse GFM tables; always verify row widths, even when header values are out of scope."""
     if not isinstance(text, str):
         raise InputError("Markdown 输入必须是文本。")
     if len(text.encode("utf-8")) > MAX_INPUT_BYTES:
@@ -88,7 +88,8 @@ def parse_tables(text: str) -> list[dict]:
                 elif item.type == "tr_open":
                     current_row = []
                 elif item.type == "inline" and current_row is not None:
-                    current_row.append(_plain(item, table["issues"]))
+                    issues = None if header and not check_header_content else table["issues"]
+                    current_row.append(_plain(item, issues))
                     count += 1
                     if count > _MAX_TABLE_CELLS:
                         raise InputError("Markdown 表格单元格数量超过安全上限。")
